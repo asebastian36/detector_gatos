@@ -83,12 +83,12 @@ def procesar_imagenes_en_carpeta():
     y guarda las imágenes resultantes (con las detecciones) en la carpeta de salida (OUTPUT_FOLDER).
     """
     # --- NUEVO: Eliminar la carpeta de salida si ya existe ---
-    if os.path.exists(OUTPUT_FOLDER):
-        print(f"Eliminando la carpeta de salida existente: '{OUTPUT_FOLDER}' y su contenido.")
-        shutil.rmtree(OUTPUT_FOLDER)
+    #if os.path.exists(OUTPUT_FOLDER):
+    #    print(f"Eliminando la carpeta de salida existente: '{OUTPUT_FOLDER}' y su contenido.")
+    #    shutil.rmtree(OUTPUT_FOLDER)
 
     # Crea la carpeta de salida (ahora limpia o recién creada).
-    os.makedirs(OUTPUT_FOLDER)
+    # os.makedirs(OUTPUT_FOLDER)
     print(f"Creada carpeta de salida: '{OUTPUT_FOLDER}'")
 
     print(f"\n--- Procesando imágenes de la carpeta: '{INPUT_FOLDER}' ---")
