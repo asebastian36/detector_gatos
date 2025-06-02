@@ -1,7 +1,6 @@
 # mascotas_haar.py
 
 import cv2
-import numpy as np
 import os
 import shutil  # Importamos la librería shutil para eliminar directorios
 

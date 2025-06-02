@@ -1,4 +1,3 @@
-# test_mascotar_haar.py
 import unittest
 import cv2
 import os
