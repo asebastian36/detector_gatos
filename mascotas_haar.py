@@ -1,7 +1,4 @@
-# mascotas_haar.py
-
 import cv2
-import numpy as np
 import os
 
 # --- 1. Configuración del Proyecto ---
@@ -155,12 +152,16 @@ def procesar_webcam():
 if __name__ == "__main__":
    print("--- Iniciando Proyecto: Detección de Caras de Gatos con Haar Cascades ---")
 
-   # --- Elige el modo de operación descomentando UNA de las siguientes líneas ---
-
-   # Opción 1: Procesar imágenes desde la carpeta 'input_images'.
-   procesar_imagenes_en_carpeta()
-
-   # Opción 2: Procesar en tiempo real desde la webcam.
-   # procesar_webcam()
+   # Nuevo: Preguntar al usuario qué modo quiere usar
+   while True:
+       choice = input("¿Qué modo de detección quieres usar?\n1. Procesar imágenes de carpeta\n2. Usar webcam\nIngresa 1 o 2: ")
+       if choice == '1':
+           procesar_imagenes_en_carpeta()
+           break
+       elif choice == '2':
+           procesar_webcam()
+           break
+       else:
+           print("Opción no válida. Por favor, ingresa '1' o '2'.")
 
    print("\n--- Programa Finalizado ---")
