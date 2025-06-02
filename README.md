@@ -1,5 +1,9 @@
 # Proyecto: Detección de objetos usando características Haar
 
+[prueba-00](./images/prueba-00.png)
+[prueba-01](./images/prueba-01.png)
+[prueba-02](./images/prueba-02.png)
+
 La finalidad de este proyecto es reconocer gatos con vision por computadora ya sea por medio de imagenes o en tiempo real proporcionado por webcam.
 
 ## Teoria basica
@@ -445,3 +449,72 @@ La característica más importante de la versión `_extended.xml` es que utiliza
 * **¡Características diagonales!**
 
 A diferencia de clasificadores Haar más básicos (como `haarcascade_frontalcatface.xml`), que solo usan características horizontales y verticales, la inclusión de características diagonales permite a este clasificador `_extended` capturar patrones visuales más complejos y sutiles. Esto a menudo se traduce en una **detección más robusta y precisa**, con menos falsos positivos.
+
+
+Aquí tienes la explicación del comando `docker run` adaptada para una documentación de GitHub, utilizando formato Markdown para una mejor presentación.
+
+---
+
+### Ejecución del Contenedor Docker: Modo Webcam (GUI)
+
+Este comando se utiliza para ejecutar la aplicación de detección de caras de gatos dentro de un contenedor Docker, específicamente configurándolo para que pueda acceder a la **webcam** de tu sistema y mostrar la **interfaz gráfica de OpenCV (ventana de la webcam)** directamente en tu escritorio.
+
+Es fundamental comprender cada parte de este comando para asegurar su correcto funcionamiento.
+
+```bash
+docker run -it --rm \
+    --device=/dev/video0:/dev/video0 \
+    -e DISPLAY=$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix \
+    deteccion-gatos:latest
+```
+
+### Desglose del Comando de ejecucion del contenedor
+
+### 1. `docker run`
+
+* **Propósito:** Es el comando base de Docker para crear y ejecutar un nuevo contenedor a partir de una imagen.
+
+### 2. `-it`
+
+* **Propósito:** Combina dos opciones:
+    * `-i` ( `--interactive`): Mantiene `STDIN` abierto incluso si no está adjunto, lo que permite la interacción con el contenedor (por ejemplo, para presionar 'q' y salir en el modo webcam).
+    * `-t` ( `--tty`): Asigna una pseudo-TTY (terminal) al contenedor, lo cual es útil para ver la salida del programa en tiempo real y para que los procesos interactivos (como el `python` script) funcionen correctamente.
+
+### 3. `--rm`
+
+* **Propósito:** Elimina automáticamente el contenedor una vez que este se detiene. Esto es una buena práctica para evitar acumular contenedores inactivos en tu sistema, manteniendo limpio el entorno de Docker.
+
+### 4. `--device=/dev/video0:/dev/video0`
+
+* **Propósito:** Concede al contenedor acceso directo a un dispositivo de hardware en tu sistema anfitrión.
+    * `/dev/video0`: Es la ruta común para la **webcam predeterminada** en sistemas Linux.
+    * Al mapearlo al mismo path dentro del contenedor (`/dev/video0`), la aplicación OpenCV dentro del contenedor puede "ver" y utilizar tu webcam como si estuviera ejecutándose directamente en tu máquina.
+    * **Nota:** Si tienes varias webcams, la principal podría ser `/dev/video0`, la segunda `/dev/video1`, etc. Asegúrate de usar la ruta correcta para tu webcam.
+
+### 5. `-e DISPLAY=$DISPLAY`
+
+* **Propósito:** Pasa la variable de entorno `DISPLAY` del sistema anfitrión al contenedor.
+    * La variable `DISPLAY` es fundamental en entornos Linux (específicamente, con el sistema de ventanas X Window System) para indicar a dónde deben enviar la salida gráfica las aplicaciones.
+    * Al pasar `$DISPLAY` (que contiene el valor de tu variable `DISPLAY` local, por ejemplo `:0`), le dices al contenedor que envíe la ventana de OpenCV a tu servidor X en tu máquina anfitrión.
+
+### 6. `-v /tmp/.X11-unix:/tmp/.X11-unix`
+
+* **Propósito:** Monta un volumen (un directorio compartido) entre el sistema anfitrión y el contenedor.
+    * `/tmp/.X11-unix`: Es un directorio especial que contiene un **socket de Unix** necesario para la comunicación entre las aplicaciones que se ejecutan en el contenedor y el servidor X de tu sistema anfitrión.
+    * Montar este volumen permite que la aplicación gráfica (la ventana de OpenCV) que se ejecuta dentro del contenedor pueda "dibujarse" en tu escritorio.
+
+### 7. `deteccion-gatos:latest`
+
+* **Propósito:** Es el nombre de la imagen Docker que se va a utilizar para crear el contenedor.
+    * `deteccion-gatos`: El nombre que le diste a tu imagen cuando la construiste (por ejemplo, `docker build -t deteccion-gatos .`).
+    * `:latest`: La etiqueta de la imagen. Indica que se utilizará la versión más reciente de la imagen que ha sido etiquetada como `latest`.
+
+### Requisitos Previos para la Ejecución
+
+Para que este comando funcione correctamente, asegúrate de cumplir con lo siguiente:
+
+* **Docker instalado:** Debes tener Docker Engine instalado y en ejecución en tu sistema (generalmente Linux para este tipo de acceso a GUI/webcam).
+* **Imagen construida:** La imagen `deteccion-gatos:latest` debe haber sido construida previamente (usando `docker build -t deteccion-gatos .`).
+* **Servidor X en ejecución:** Tu sistema anfitrión debe estar ejecutando un servidor X Window System (lo cual es común en la mayoría de los entornos de escritorio Linux).
+* **Permisos de X11:** En algunos sistemas, puede que necesites otorgar permisos al contenedor para acceder a tu servidor X. Esto se hace típicamente con `xhost +local:` o `xhost +` antes de ejecutar el comando `docker run`. Recuerda que `xhost +` desactiva las restricciones de acceso y es menos seguro. Es mejor usarlo solo temporalmente o configurar permisos más específicos.
